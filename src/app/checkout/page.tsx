@@ -44,12 +44,6 @@ export default function CheckoutPage() {
     state: "",
     zipCode: "",
     country: "",
-
-    // Payment
-    cardNumber: "",
-    cardName: "",
-    expiryDate: "",
-    cvv: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -93,16 +87,6 @@ export default function CheckoutPage() {
       if (!formData.country.trim()) newErrors.country = "Country is required";
     }
 
-    if (currentStep === 3) {
-      if (!formData.cardNumber.trim())
-        newErrors.cardNumber = "Card number is required";
-      if (!formData.cardName.trim())
-        newErrors.cardName = "Cardholder name is required";
-      if (!formData.expiryDate.trim())
-        newErrors.expiryDate = "Expiry date is required";
-      if (!formData.cvv.trim()) newErrors.cvv = "CVV is required";
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -119,11 +103,9 @@ export default function CheckoutPage() {
 
   const handleSubmit = async () => {
     if (!cartItems.length) {
-      alert("Your cart is empty.");
+      toast.error("Your cart is empty.");
       return;
     }
-
-    if (!validateStep(3)) return;
 
     setIsProcessing(true);
 
@@ -155,31 +137,19 @@ export default function CheckoutPage() {
       };
 
       const res = await api.post("/order", payload);
+      const { checkoutUrl: url } = res.data?.data ?? {};
 
-      dispatch(clearCart());
-
-      setFormData({
-        fullName: "",
-        email: "",
-        phone: "",
-        address: "",
-        city: "",
-        state: "",
-        zipCode: "",
-        country: "",
-        cardNumber: "",
-        cardName: "",
-        expiryDate: "",
-        cvv: "",
-      });
-      setStep(1);
-
-      toast.success("Order placed successfully!");
+      if (url) {
+        dispatch(clearCart());
+        window.location.href = url;
+      } else {
+        toast.success("Order placed successfully!");
+      }
     } catch (err: any) {
       console.error(err);
       toast.error(
         err?.response?.data?.error?.message ||
-          "Failed to place order. Please try again."
+        "Failed to place order. Please try again."
       );
     } finally {
       setIsProcessing(false);
@@ -189,7 +159,7 @@ export default function CheckoutPage() {
   const steps = [
     { number: 1, title: "Contact", icon: User },
     { number: 2, title: "Address", icon: MapPin },
-    { number: 3, title: "Payment", icon: CreditCard },
+    { number: 3, title: "Review", icon: CreditCard },
   ];
 
   return (
@@ -478,7 +448,7 @@ export default function CheckoutPage() {
                 </motion.div>
               )}
 
-              {/* Step 3: Payment */}
+              {/* Step 3: Review & Pay */}
               {step === 3 && (
                 <motion.div
                   key="step3"
@@ -492,111 +462,30 @@ export default function CheckoutPage() {
                       <CreditCard className="w-5 h-5" />
                     </div>
                     <h2 className="text-2xl font-black uppercase">
-                      Payment Details
+                      Review & Pay
                     </h2>
                   </div>
 
                   <div className="space-y-5">
-                    <div>
-                      <label className="block text-sm font-bold uppercase tracking-wider text-gray-700 mb-2">
-                        Card Number *
-                      </label>
-                      <input
-                        type="text"
-                        name="cardNumber"
-                        value={formData.cardNumber}
-                        onChange={handleInputChange}
-                        className={cn(
-                          "w-full px-4 py-3 border-2 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-[#bce201] transition-all",
-                          errors.cardNumber ? "border-red-500" : "border-black"
-                        )}
-                        placeholder="1234 5678 9012 3456"
-                        maxLength={19}
-                      />
-                      {errors.cardNumber && (
-                        <p className="text-red-500 text-xs font-bold mt-1">
-                          {errors.cardNumber}
-                        </p>
-                      )}
+                    {/* Contact summary */}
+                    <div className="rounded-lg border-2 border-black p-4">
+                      <p className="text-xs font-black uppercase tracking-widest text-gray-500 mb-2">Contact</p>
+                      <p className="font-bold">{formData.fullName}</p>
+                      <p className="text-sm text-gray-600">{formData.email} &middot; {formData.phone}</p>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-bold uppercase tracking-wider text-gray-700 mb-2">
-                        Cardholder Name *
-                      </label>
-                      <input
-                        type="text"
-                        name="cardName"
-                        value={formData.cardName}
-                        onChange={handleInputChange}
-                        className={cn(
-                          "w-full px-4 py-3 border-2 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-[#bce201] transition-all",
-                          errors.cardName ? "border-red-500" : "border-black"
-                        )}
-                        placeholder="John Doe"
-                      />
-                      {errors.cardName && (
-                        <p className="text-red-500 text-xs font-bold mt-1">
-                          {errors.cardName}
-                        </p>
-                      )}
+                    {/* Shipping summary */}
+                    <div className="rounded-lg border-2 border-black p-4">
+                      <p className="text-xs font-black uppercase tracking-widest text-gray-500 mb-2">Ships to</p>
+                      <p className="font-bold">{formData.address}</p>
+                      <p className="text-sm text-gray-600">{formData.city}, {formData.state} {formData.zipCode} &mdash; {formData.country}</p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-5">
-                      <div>
-                        <label className="block text-sm font-bold uppercase tracking-wider text-gray-700 mb-2">
-                          Expiry Date *
-                        </label>
-                        <input
-                          type="text"
-                          name="expiryDate"
-                          value={formData.expiryDate}
-                          onChange={handleInputChange}
-                          className={cn(
-                            "w-full px-4 py-3 border-2 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-[#bce201] transition-all",
-                            errors.expiryDate
-                              ? "border-red-500"
-                              : "border-black"
-                          )}
-                          placeholder="MM/YY"
-                          maxLength={5}
-                        />
-                        {errors.expiryDate && (
-                          <p className="text-red-500 text-xs font-bold mt-1">
-                            {errors.expiryDate}
-                          </p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-bold uppercase tracking-wider text-gray-700 mb-2">
-                          CVV *
-                        </label>
-                        <input
-                          type="text"
-                          name="cvv"
-                          value={formData.cvv}
-                          onChange={handleInputChange}
-                          className={cn(
-                            "w-full px-4 py-3 border-2 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-[#bce201] transition-all",
-                            errors.cvv ? "border-red-500" : "border-black"
-                          )}
-                          placeholder="123"
-                          maxLength={4}
-                        />
-                        {errors.cvv && (
-                          <p className="text-red-500 text-xs font-bold mt-1">
-                            {errors.cvv}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
+                    {/* Security note */}
                     <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-4 flex items-start gap-3">
                       <ShieldCheck className="w-5 h-5 text-[#bce201] shrink-0 mt-0.5" />
                       <p className="text-xs font-medium text-gray-600">
-                        Your payment information is encrypted and secure. We
-                        never store your full card details.
+                        You will be redirected to <span className="font-bold text-black">Tabby</span> to complete your payment securely. Your order will be confirmed once payment is processed.
                       </p>
                     </div>
                   </div>
@@ -730,6 +619,7 @@ export default function CheckoutPage() {
           </div>
         </div>
       </main>
+
     </div>
   );
 }
