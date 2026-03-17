@@ -28,6 +28,7 @@ function cn(...inputs: (string | undefined | null | false)[]) {
 export default function CheckoutPage() {
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"tabby" | "tamara">("tabby");
 
   const dispatch = useDispatch();
 
@@ -134,10 +135,11 @@ export default function CheckoutPage() {
         shippingCost: shipping,
         tax,
         total,
+        paymentMethod,
       };
 
       const res = await api.post("/order", payload);
-      const { checkoutUrl: url } = res.data?.data ?? {};
+      const url = res.data?.data?.checkoutUrl ?? res.data?.checkoutUrl;
 
       if (url) {
         dispatch(clearCart());
@@ -481,11 +483,47 @@ export default function CheckoutPage() {
                       <p className="text-sm text-gray-600">{formData.city}, {formData.state} {formData.zipCode} &mdash; {formData.country}</p>
                     </div>
 
+                    {/* Payment Method Selection */}
+                    <div className="space-y-3">
+                      <p className="text-sm font-bold uppercase tracking-wider text-gray-700">Select Payment Method</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <button
+                          onClick={() => setPaymentMethod("tabby")}
+                          className={cn(
+                            "flex flex-col items-center justify-center p-6 rounded-xl border-2 transition-all gap-4 h-40",
+                            paymentMethod === "tabby"
+                              ? "border-black bg-[#bce201] shadow-[6px_6px_0px_0px_#000]"
+                              : "border-gray-200 bg-white hover:border-black hover:shadow-[4px_4px_0px_0px_#000]"
+                          )}
+                        >
+                          <div className="h-12 flex items-center">
+                            <img src="/tabby-logo.png" alt="Tabby" className="h-full object-contain" onError={(e) => (e.currentTarget.src = "https://cdn.tabby.ai/assets/logo.png")} />
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-black/60">Pay with Tabby</span>
+                        </button>
+
+                        <button
+                          onClick={() => setPaymentMethod("tamara")}
+                          className={cn(
+                            "flex flex-col items-center justify-center p-6 rounded-xl border-2 transition-all gap-4 h-40",
+                            paymentMethod === "tamara"
+                              ? "border-black bg-[#bce201] shadow-[6px_6px_0px_0px_#000]"
+                              : "border-gray-200 bg-white hover:border-black hover:shadow-[4px_4px_0px_0px_#000]"
+                          )}
+                        >
+                          <div className="h-20 flex items-center">
+                            <img src="/tamara-logo.png" alt="Tamara" className="h-full object-contain" />
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-black/60">Pay with Tamara</span>
+                        </button>
+                      </div>
+                    </div>
+
                     {/* Security note */}
                     <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-4 flex items-start gap-3">
                       <ShieldCheck className="w-5 h-5 text-[#bce201] shrink-0 mt-0.5" />
                       <p className="text-xs font-medium text-gray-600">
-                        You will be redirected to <span className="font-bold text-black">Tabby</span> to complete your payment securely. Your order will be confirmed once payment is processed.
+                        You will be redirected to <span className="font-bold text-black uppercase">{paymentMethod}</span> to complete your payment securely. Your order will be confirmed once payment is processed.
                       </p>
                     </div>
                   </div>

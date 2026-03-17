@@ -54,7 +54,7 @@ export default function OrderFailurePage() {
 
     useEffect(() => {
         if (!id) return;
-        // Sync Tabby payment state first, then fetch the updated order
+        // Sync payment state first, then fetch the updated order
         api
             .get(`/order/${id}/sync-payment`)
             .catch(() => { }) // non-blocking — proceed even if sync fails
