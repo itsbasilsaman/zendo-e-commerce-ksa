@@ -22,7 +22,10 @@ function cn(...inputs: any[]) {
   return twMerge(clsx(inputs));
 }
 
+import { useLanguage } from "@/src/context/LanguageContext";
+
 export default function ContactBanner() {
+  const { isArabic } = useLanguage();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -77,17 +80,21 @@ export default function ContactBanner() {
             {/* Header */}
             <div className="space-y-6">
               <span className="inline-block py-1 px-3 rounded-full bg-[#bce201] text-black border-2 border-black text-xs font-bold tracking-widest uppercase shadow-[4px_4px_0px_0px_#000]">
-                Contact Support
+                {isArabic ? "اتصل بالدعم" : "Contact Support"}
               </span>
               <h1 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none">
-                Let&lsquo;s Talk <br />
+                {isArabic ? "لنتحدث في" : "Let's Talk"} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-black to-gray-600">
-                  Business.
+                  {isArabic ? "الأعمال." : "Business."}
                 </span>
               </h1>
-              <p className="text-lg text-gray-600 font-medium max-w-md border-l-4 border-[#bce201] pl-6 py-2">
-                Have questions about bulk orders or supply chains? Our dedicated
-                B2B team in Riyadh is ready to assist you.
+              <p
+                className={cn(
+                  "text-lg text-gray-600 font-medium max-w-md border-l-4 border-[#bce201] pl-6 py-2",
+                  isArabic ? "border-r-4 border-l-0 pr-6 pl-0" : ""
+                )}
+              >
+                {isArabic ? "هل لديك أسئلة حول طلبات الجملة أو سلاسل التوريد؟ فريقنا المخصص لخدمات الشركات في الرياض جاهز لمساعدتك." : "Have questions about bulk orders or supply chains? Our dedicated B2B team in Riyadh is ready to assist you."}
               </p>
             </div>
 
@@ -99,13 +106,14 @@ export default function ContactBanner() {
                   <Mail className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black uppercase">Email Us</h3>
+                  <h3 className="text-lg font-black uppercase">{isArabic ? "راسلنا" : "Email Us"}</h3>
                   <p className="text-gray-600 text-sm mb-1">
-                    For general inquiries
+                    {isArabic ? "للاستفسارات العامة" : "For general inquiries"}
                   </p>
                   <a
                     href="mailto:info@zendo.com"
-                    className="text-lg font-bold hover:text-[#bce201] hover:underline transition-colors"
+                    dir="ltr"
+                    className="text-lg font-bold hover:text-[#bce201] hover:underline transition-colors inline-block"
                   >
                     info@zendohypermarket.com
                   </a>
@@ -118,13 +126,14 @@ export default function ContactBanner() {
                   <Phone className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black uppercase">Call Us</h3>
+                  <h3 className="text-lg font-black uppercase">{isArabic ? "اتصل بنا" : "Call Us"}</h3>
                   <p className="text-gray-600 text-sm mb-1">
-                    Mon-Sat, 8am - 9pm
+                    {isArabic ? "الاثنين - السبت، 8 صباحاً - 9 مساءً" : "Mon-Sat, 8am - 9pm"}
                   </p>
                   <a
                     href="tel:+96612345678"
-                    className="text-lg font-bold hover:text-[#bce201] hover:underline transition-colors"
+                    dir="ltr"
+                    className="text-lg font-bold hover:text-[#bce201] hover:underline transition-colors inline-block"
                   >
                     +966 12 345 6789
                   </a>
@@ -137,10 +146,10 @@ export default function ContactBanner() {
                   <MapPin className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black uppercase">Visit HQ</h3>
-                  <p className="text-gray-600 text-sm mb-1">Olaya District</p>
+                  <h3 className="text-lg font-black uppercase">{isArabic ? "زيارة المقر الرئيسي" : "Visit HQ"}</h3>
+                  <p className="text-gray-600 text-sm mb-1">{isArabic ? "حي العليا" : "Olaya District"}</p>
                   <p className="text-lg font-bold">
-                    King Fahd Road, Riyadh, KSA
+                    {isArabic ? "طريق الملك فهد، الرياض، المملكة العربية السعودية" : "King Fahd Road, Riyadh, KSA"}
                   </p>
                 </div>
               </div>
@@ -173,8 +182,8 @@ export default function ContactBanner() {
                   <ThemeInput
                     id="fullName"
                     name="fullName"
-                    label="Full Name"
-                    placeholder="John Doe"
+                    label={isArabic ? "الاسم الكامل" : "Full Name"}
+                    placeholder={isArabic ? "أحمد محمد" : "John Doe"}
                     value={formData.fullName}
                     onChange={handleChange}
                     required
@@ -182,9 +191,9 @@ export default function ContactBanner() {
                   <ThemeInput
                     id="email"
                     name="email"
-                    label="Email Address"
+                    label={isArabic ? "البريد الإلكتروني" : "Email Address"}
                     type="email"
-                    placeholder="john@example.com"
+                    placeholder={isArabic ? "ahmed@example.com" : "john@example.com"}
                     value={formData.email}
                     onChange={handleChange}
                     required
@@ -195,7 +204,7 @@ export default function ContactBanner() {
                   <ThemeInput
                     id="phone"
                     name="phone"
-                    label="Phone Number"
+                    label={isArabic ? "رقم الهاتف" : "Phone Number"}
                     type="tel"
                     placeholder="+966..."
                     value={formData.phone}
@@ -205,8 +214,8 @@ export default function ContactBanner() {
                   <ThemeInput
                     id="subject"
                     name="subject"
-                    label="Subject"
-                    placeholder="Bulk Order Inquiry"
+                    label={isArabic ? "الموضوع" : "Subject"}
+                    placeholder={isArabic ? "استفسار عن طلب جملة" : "Bulk Order Inquiry"}
                     value={formData.subject}
                     onChange={handleChange}
                     required
@@ -216,15 +225,15 @@ export default function ContactBanner() {
                 <div className="space-y-2 group">
                   <label
                     htmlFor="message"
-                    className="text-sm font-bold uppercase tracking-wider text-black group-focus-within:text-[#bce201] transition-colors"
+                    className={cn("text-sm font-bold uppercase tracking-wider text-black group-focus-within:text-[#bce201] transition-colors", isArabic ? "text-right block w-full" : "")}
                   >
-                    Message
+                    {isArabic ? "رسالة" : "Message"}
                   </label>
                   <textarea
                     id="message"
                     name="message"
                     rows={5}
-                    placeholder="Tell us about your requirements..."
+                    placeholder={isArabic ? "أخبرنا عن متطلباتك..." : "Tell us about your requirements..."}
                     value={formData.message}
                     onChange={handleChange}
                     required
@@ -241,13 +250,13 @@ export default function ContactBanner() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-black text-white h-14 rounded-lg font-bold text-lg uppercase tracking-wider border-2 border-black hover:bg-[#bce201] hover:text-black transition-all duration-200 hover:shadow-[4px_4px_0px_0px_#000] hover:-translate-y-1 active:translate-y-0 active:shadow-none flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className={cn("w-full bg-black text-white h-14 rounded-lg font-bold text-lg uppercase tracking-wider border-2 border-black hover:bg-[#bce201] hover:text-black transition-all duration-200 hover:shadow-[4px_4px_0px_0px_#000] hover:-translate-y-1 active:translate-y-0 active:shadow-none flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed", isArabic ? "flex-row-reverse" : "")}
                 >
                   {isSubmitting ? (
-                    <>Processing...</>
+                    <>{isArabic ? "جاري المعالجة..." : "Processing..."}</>
                   ) : (
                     <>
-                      Send Message <Send size={20} />
+                      {isArabic ? "إرسال رسالة" : "Send Message"} <Send size={20} className={isArabic ? "rotate-180" : ""} />
                     </>
                   )}
                 </button>

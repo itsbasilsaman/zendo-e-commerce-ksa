@@ -1,9 +1,9 @@
+"use client";
+
 import { CategoryType } from "@/src/types/category"
 import React from "react"
-import { BiCategory, BiDrink } from "react-icons/bi"
-import { IoFastFoodOutline } from "react-icons/io5"
-import { MdOutlineCleaningServices } from "react-icons/md"
-
+import { BiCategory } from "react-icons/bi"
+import { useLanguage } from "@/src/context/LanguageContext"
 
 interface CategorySelectorProps {
   mainCategories: CategoryType[]
@@ -22,6 +22,8 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
   handleMainCategoryClick,
   handleSubCategoryClick,
 }) => {
+  const { t, getLocalizedName } = useLanguage();
+
   // Common colors & classes
   const activeBg = "bg-white text-black border-2 border-[#bce201] shadow-md"
   const inactiveBg = "bg-black text-[#bce201] border-2 border-[#bce201] hover:bg-[#bce201] hover:text-black"
@@ -30,7 +32,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
     <div className="flex flex-col gap-4 md:gap-6 mb-6 md:mb-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold text-black">
-          Popular Products
+          {t("products.popular")}
         </h1>
         {/* Desktop Categories - Pill Design */}
         <div className="hidden lg:flex items-center gap-3">
@@ -41,7 +43,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
             }`}
           >
             <BiCategory className={`w-5 h-5 ${activeMainCategory === "All" ? "text-black" : "text-[#bce201]"}`} />
-            All
+            {t("products.all")}
           </button>
           {mainCategories.map((category) => (
             <button
@@ -51,8 +53,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
                 activeMainCategory === category.name.en ? activeBg : inactiveBg
               }`}
             >
-              {/* <category.icon className={`w-5 h-5 ${activeMainCategory === category.name.en ? "text-black" : "text-[#bce201]"}`} /> */}
-              {category.name.en}
+              {getLocalizedName(category.name)}
             </button>
           ))}
         </div>
@@ -66,7 +67,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
             }`}
           >
             <BiCategory className={`w-5 h-5 flex-shrink-0 ${activeMainCategory === "All" ? "text-black" : "text-[#bce201]"}`} />
-            <span>All</span>
+            <span>{t("products.all")}</span>
           </button>
           {mainCategories.map((category) => (
             <button
@@ -76,8 +77,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
                 activeMainCategory === category.name.en ? activeBg : inactiveBg
               }`}
             >
-              {/* <category.icon className={`w-5 h-5 flex-shrink-0 ${activeMainCategory === category.name.en ? "text-black" : "text-[#bce201]"}`} /> */}
-              <span className="text-xs leading-tight">{category.name.en}</span>
+              <span className="text-xs leading-tight">{getLocalizedName(category.name)}</span>
             </button>
           ))}
         </div>
@@ -91,7 +91,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
                 activeSubCategory === "All" ? "bg-white text-black border-[#bce201] shadow-lg" : "bg-black text-[#bce201] border-[#bce201] hover:bg-[#bce201] hover:text-black hover:shadow-sm"
               }`}
             >
-              All {expandedCategory}
+              {t("products.all")} {expandedCategory}
             </button>
             {(mainCategories.find((cat) => cat.name.en === expandedCategory)?.subCategories ?? []).map((subCat, index) => (
                 <button
@@ -106,7 +106,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
                       : "bg-black text-[#bce201] border-[#bce201] hover:bg-[#bce201] hover:text-black hover:shadow-sm"
                   }`}
                 >
-                  {subCat.name?.en}
+                  {getLocalizedName(subCat.name)}
                 </button>
               ))}
           </div>

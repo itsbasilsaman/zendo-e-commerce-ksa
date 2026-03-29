@@ -13,6 +13,7 @@ import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/redux";
+import { useLanguage } from "@/src/context/LanguageContext";
 
 // --- Utility ---
 function cn(...inputs: unknown[]) {
@@ -78,6 +79,7 @@ interface FeatureCardProps {
     title: string;
     description: string;
     items: string[];
+    iconKey: string;
   };
   index: number;
   showAnimation: boolean;
@@ -85,7 +87,7 @@ interface FeatureCardProps {
 
 function FeatureCard({ feature, index, showAnimation }: FeatureCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const Icon = getCategoryIcon(feature.title);
+  const Icon = getCategoryIcon(feature.iconKey);
 
   return (
     <div
@@ -102,14 +104,14 @@ function FeatureCard({ feature, index, showAnimation }: FeatureCardProps) {
         className={cn(
           "h-full flex flex-col relative overflow-hidden",
           "border-2 border-black rounded-xl",
-          "bg-[#bce201] text-black", // Your specific color
+          "bg-[#bce201] text-black",
           "transition-all duration-300 ease-out",
           isHovered
             ? "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] -translate-y-1"
             : "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
         )}
       >
-        {/* Decorative pattern overlay (subtle noise/dots) */}
+        {/* Decorative pattern overlay */}
         <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] bg-size-[16px_16px]" />
 
         <div className="p-6 md:p-8 flex flex-col h-full relative z-10">
@@ -155,6 +157,7 @@ function FeatureCard({ feature, index, showAnimation }: FeatureCardProps) {
 export default function FeatureCardsGrid() {
   const ref = useRef<HTMLDivElement | null>(null);
   const isVisible = useOnScreen(ref, "-50px");
+  const { t, getLocalizedName, locale } = useLanguage();
 
   const categories = useSelector((state: RootState) => state.category.data);
   const loading = useSelector((state: RootState) => state.category.loading);
@@ -162,11 +165,12 @@ export default function FeatureCardsGrid() {
   const displayCategories =
     categories?.slice(0, 4).map((category, index) => ({
       id: index,
-      title: category.name.en,
-      description: `Explore the best ${category.name.en} products.`,
+      title: getLocalizedName(category.name),
+      iconKey: category.name.en,
+      description: `${t("showcase.explore")} ${getLocalizedName(category.name)} ${t("showcase.products")}`,
       items:
         category.subCategories
-          ?.flatMap((sub) => sub.items?.map((item) => item.en) || [])
+          ?.flatMap((sub) => sub.items?.map((item) => locale === "ar" ? item.ar : item.en) || [])
           ?.slice(0, 5) || [],
     })) || [];
 
@@ -177,12 +181,12 @@ export default function FeatureCardsGrid() {
         {/* Header Section */}
         <div className="text-center mb-16 space-y-4">
           <span className="inline-block py-1 px-3 rounded-full bg-black text-white text-xs font-bold tracking-widest uppercase">
-            Catalog 2024
+            {t("showcase.catalog")}
           </span>
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase">
-            Shop By{" "}
+            {t("showcase.shopBy")}{" "}
             <span className="relative inline-block">
-              Category
+              {t("showcase.category")}
               <svg
                 className="absolute w-full h-3 -bottom-1 left-0 text-[#bce201]"
                 viewBox="0 0 100 10"
@@ -198,8 +202,7 @@ export default function FeatureCardsGrid() {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-medium">
-            Explore our curated collection of essentials. Quality products
-            delivered to your doorstep with style.
+            {t("showcase.description")}
           </p>
         </div>
 
@@ -221,7 +224,7 @@ export default function FeatureCardsGrid() {
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
           <button className="bg-black text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-[#bce201] hover:text-black transition-colors duration-300 shadow-lg hover:shadow-xl">
-            View All Products
+            {t("showcase.viewAll")}
           </button>
         </div>
       </div>

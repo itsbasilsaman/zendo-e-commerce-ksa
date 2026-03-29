@@ -1,15 +1,51 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-montserrat), "Montserrat", sans-serif;
+  --font-serif: var(--font-montserrat), "Montserrat", sans-serif;
+  --font-mono: var(--font-montserrat), "Montserrat", sans-serif;
+  --font-display: var(--font-montserrat), "Montserrat", sans-serif;
+  --font-body: var(--font-montserrat), "Montserrat", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enforce pointer cursor globally for interactive elements */
+@layer base {
+  a, button, [role="button"], input[type="submit"], input[type="button"], select, summary {
+    cursor: pointer;
+  }
+  
+  /* Prevent pointer cursor on disabled elements */
+  button:disabled, input:disabled, a[disabled] {
+    cursor: not-allowed !important;
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #ffff;
 }
 
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-wix-madefor-display), Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat), "Montserrat", sans-serif;
+  transition: opacity 0.15s ease-in;
+}
+
+/* Arabic font for RTL mode - force on ALL elements */
+[dir="rtl"] body,
+[dir="rtl"] body * {
+  font-family: var(--font-ibm-plex-sans-arabic), "IBM Plex Sans Arabic", Arial, Helvetica, sans-serif !important;
+}
+
+/* English font for LTR mode - force on ALL elements to prevent ANY other font */
+html:not([dir="rtl"]) body,
+html:not([dir="rtl"]) body * {
+  font-family: var(--font-montserrat), "Montserrat", sans-serif !important;
 }
 
 /* Hide scrollbar for cleaner mobile category navigation */
@@ -22,5 +58,11 @@ body {
   display: none;
 }
 
+/* RTL-specific adjustments */
+[dir="rtl"] .animate-marquee-infinite {
+  animation-direction: reverse;
+}
 
-  
+[dir="rtl"] .animate-marquee {
+  animation-direction: reverse;
+}

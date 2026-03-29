@@ -40,9 +40,12 @@ function useOnScreen(
   return isIntersecting;
 }
 
+import { useLanguage } from "@/src/context/LanguageContext";
+
 export default function StorySection() {
   const ref = useRef<HTMLElement | null>(null);
   const isVisible = useOnScreen(ref, "-100px");
+  const { isArabic } = useLanguage();
 
   return (
     <section
@@ -92,9 +95,9 @@ export default function StorySection() {
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider opacity-60">
-                  Customer Rating
+                  {isArabic ? "تقييم العملاء" : "Customer Rating"}
                 </p>
-                <p className="text-lg font-black">4.9/5.0</p>
+                <p className="text-lg font-black" dir="ltr">4.9/5.0</p>
               </div>
             </div>
 
@@ -115,7 +118,7 @@ export default function StorySection() {
             >
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black text-[#bce201] text-xs font-bold tracking-widest uppercase border-2 border-transparent hover:border-[#bce201] transition-colors cursor-default">
                 <Leaf size={12} />
-                Our Story
+                {isArabic ? "قصتنا" : "Our Story"}
               </span>
             </div>
 
@@ -128,9 +131,9 @@ export default function StorySection() {
                   : "opacity-0 translate-y-8"
               )}
             >
-              It started <br className="hidden lg:block" />
+              {isArabic ? "بدأت" : "It started"} <br className="hidden lg:block" />
               <span className="relative inline-block px-2">
-                <span className="relative z-10">4 years ago</span>
+                <span className="relative z-10">{isArabic ? "قبل 4 سنوات" : "4 years ago"}</span>
                 {/* Highlight Effect */}
                 <span className="absolute inset-0 bg-[#bce201] h-1/2 bottom-1 z-0 opacity-60 transform -skew-x-12 translate-y-1"></span>
               </span>
@@ -142,13 +145,13 @@ export default function StorySection() {
                 "text-lg md:text-xl text-gray-600 leading-relaxed max-w-lg font-medium border-l-4 border-[#bce201] pl-6 transition-all duration-700 delay-300",
                 isVisible
                   ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
+                  : "opacity-0 translate-y-8",
+                isArabic ? "border-r-4 border-l-0 pr-6 pl-0" : ""
               )}
             >
-              We began with a simple mission: to bring authentic flavors to your
-              table. Every pastry, every loaf is crafted with passion, using
-              only the finest natural ingredients sourced directly from local
-              farmers.
+              {isArabic
+                ? "بدأنا بمهمة بسيطة: تقديم نكهات أصيلة لمائدتك. كل معجنات وكل رغيف يُصنع بشغف، باستخدام أجود المكونات الطبيعية فقط والتي نحصل عليها مباشرة من المزارعين المحليين."
+                : "We began with a simple mission: to bring authentic flavors to your table. Every pastry, every loaf is crafted with passion, using only the finest natural ingredients sourced directly from local farmers."}
             </p>
 
             {/* Buttons */}
@@ -160,16 +163,16 @@ export default function StorySection() {
                   : "opacity-0 translate-y-8"
               )}
             >
-              <button className="group relative px-8 py-4 bg-black text-white font-bold text-lg rounded-lg overflow-hidden shadow-[4px_4px_0px_0px_#bce201] hover:shadow-[2px_2px_0px_0px_#bce201] hover:translate-x-0.5 hover:translate-y-0.5 transition-all active:translate-x-1 active:translate-y-1 active:shadow-none">
-                <span className="relative z-10 flex items-center gap-2">
-                  Order Now{" "}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <button className={cn("group relative px-8 py-4 bg-black text-white font-bold text-lg rounded-lg overflow-hidden shadow-[4px_4px_0px_0px_#bce201] hover:shadow-[2px_2px_0px_0px_#bce201] hover:translate-x-0.5 hover:translate-y-0.5 transition-all active:translate-x-1 active:translate-y-1 active:shadow-none", isArabic ? "flex-row-reverse" : "")}>
+                <span className={cn("relative z-10 flex items-center gap-2", isArabic ? "flex-row-reverse" : "")}>
+                  {isArabic ? "اطلب الآن" : "Order Now"}
+                  <ArrowRight className={cn("w-5 h-5 transition-transform", isArabic ? "rotate-180 group-hover:-translate-x-1" : "group-hover:translate-x-1")} />
                 </span>
               </button>
 
-              <button className="px-8 py-4 bg-white text-black border-2 border-black font-bold text-lg rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+              <button className={cn("px-8 py-4 bg-white text-black border-2 border-black font-bold text-lg rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2", isArabic ? "flex-row-reverse" : "")}>
                 <Clock className="w-5 h-5" />
-                Full History
+                {isArabic ? "التاريخ الكامل" : "Full History"}
               </button>
             </div>
 
@@ -186,27 +189,27 @@ export default function StorySection() {
                 <div className="flex items-center gap-2 text-[#bce201] mb-1">
                   <Users size={16} className="text-black" />
                 </div>
-                <p className="text-3xl font-black tracking-tight">15k+</p>
+                <p className="text-3xl font-black tracking-tight" dir="ltr">15k+</p>
                 <p className="text-xs font-bold uppercase tracking-wider opacity-60">
-                  Orders Served
+                  {isArabic ? "الطلبات المقدمة" : "Orders Served"}
                 </p>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-[#bce201] mb-1">
                   <Leaf size={16} className="text-black" />
                 </div>
-                <p className="text-3xl font-black tracking-tight">100%</p>
+                <p className="text-3xl font-black tracking-tight" dir="ltr">100%</p>
                 <p className="text-xs font-bold uppercase tracking-wider opacity-60">
-                  Natural
+                  {isArabic ? "طبيعي" : "Natural"}
                 </p>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-[#bce201] mb-1">
                   <Award size={16} className="text-black" />
                 </div>
-                <p className="text-3xl font-black tracking-tight">25+</p>
+                <p className="text-3xl font-black tracking-tight" dir="ltr">25+</p>
                 <p className="text-xs font-bold uppercase tracking-wider opacity-60">
-                  Awards Won
+                  {isArabic ? "الجوائز" : "Awards Won"}
                 </p>
               </div>
             </div>

@@ -1,15 +1,17 @@
+"use client";
+
 import React from "react";
 import { ShoppingCart, Eye, Heart, Check } from "lucide-react";
 import { ProductType } from "@/src/redux/product/slice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/redux";
+import { useLanguage } from "@/src/context/LanguageContext";
 
 interface ProductCardProps {
   product: ProductType;
   hoveredCard: string | null;
   setHoveredCard: (id: string | null) => void;
   addedItems: string[];
-  // wishlistItems: string[];
   handleAddToCart: (id: string) => void;
   handleToggleWishlist: (id: string) => void;
   onClick?: () => void;
@@ -20,7 +22,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   hoveredCard,
   setHoveredCard,
   addedItems = [],
-  // wishlistItems = [],
   handleAddToCart,
   handleToggleWishlist,
   onClick,
@@ -30,6 +31,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
     return null;
   }
 
+  const { t, getLocalizedName } = useLanguage();
+
   const cartItems = useSelector((s: RootState) => s.cart.items);
   const wishlistItems = useSelector((s: RootState) => s.wishlist.items);
 
@@ -38,11 +41,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const isHovered = hoveredCard === product._id;
 
-   const productName = product.name?.en || "Product";
-
-  const categoryName = product.categoryId?.name?.en || "Uncategorized";
-
-  const brandName = product.brandId?.name?.en || "";
+  const productName = getLocalizedName(product.name) || t("products.product");
+  const categoryName = getLocalizedName(product.categoryId?.name) || t("products.uncategorized");
+  const brandName = getLocalizedName(product.brandId?.name) || "";
 
   return (
     <div
@@ -88,7 +89,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               console.log("Quick view:", product._id);
             }}
             className="w-9 h-9 bg-white border-2 border-black rounded flex items-center justify-center text-black hover:bg-black hover:text-[#bce201] transition-colors"
-            title="Quick View"
+            title={t("products.quickView")}
           >
             <Eye size={18} />
           </button>
@@ -103,7 +104,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 ? "bg-[#bce201] text-black"
                 : "bg-white text-black hover:bg-[#bce201]"
             }`}
-            title="Add to Wishlist"
+            title={t("products.addToWishlist")}
           >
             <Heart size={18} className={isWishlisted ? "fill-black" : ""} />
           </button>
@@ -125,7 +126,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
           {/* Brand (Optional) */}
           {brandName && (
-            <p className="text-[10px] text-gray-500 mb-1">Brand: {brandName}</p>
+            <p className="text-[10px] text-gray-500 mb-1">{t("products.brand")}: {brandName}</p>
           )}
         </div>
 
@@ -157,7 +158,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             }`}
           >
             {isAdded ? <Check size={14} /> : <ShoppingCart size={14} />}
-            {isAdded ? "Added" : "Add to Cart"}
+            {isAdded ? t("products.added") : t("products.addToCart")}
           </button>
         </div>
       </div>

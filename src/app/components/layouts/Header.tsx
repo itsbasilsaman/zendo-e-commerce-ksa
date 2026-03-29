@@ -9,16 +9,58 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/redux";
+import { useLanguage } from "@/src/context/LanguageContext";
 
 // --- Utility ---
 function cn(...inputs: unknown[]) {
   return twMerge(clsx(inputs));
 }
 
+function LanguageToggle({ className = "" }: { className?: string }) {
+  const { locale, setLocale } = useLanguage();
+
+  return (
+    <div className={cn("relative flex items-center", className)}>
+      <div className="flex items-center bg-black border-2 border-black rounded-full p-0.5 relative overflow-hidden">
+        {/* Sliding indicator */}
+        <div
+          className={cn(
+            "absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-[#bce201] rounded-full transition-all duration-300 ease-out",
+            locale === "ar" ? "left-[calc(50%+1px)]" : "left-0.5"
+          )}
+        />
+        <button
+          onClick={() => setLocale("en")}
+          className={cn(
+            "relative z-10 flex items-center justify-center w-12 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-colors duration-300",
+            locale === "en"
+              ? "text-black"
+              : "text-white hover:text-[#bce201]"
+          )}
+        >
+          EN
+        </button>
+        <button
+          onClick={() => setLocale("ar")}
+          className={cn(
+            "relative z-10 flex items-center justify-center w-12 py-1.5 rounded-full text-xs font-bold transition-colors duration-300",
+            locale === "ar"
+              ? "text-black"
+              : "text-white hover:text-[#bce201]"
+          )}
+        >
+          عربي
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const { t, isArabic } = useLanguage();
 
   useEffect(() => {
     setIsMounted(true);
@@ -27,8 +69,11 @@ export default function Header() {
   const totalQuantity = useSelector((state: RootState) =>
     state.cart.items.reduce((acc, item) => acc + item.quantity, 0)
   );
-
   const cartCount = isMounted ? totalQuantity : 0;
+
+  const totalWishlist = useSelector((state: RootState) => state.wishlist.items.length);
+  const wishlistCount = isMounted ? totalWishlist : 0;
+
 
   // Handle scroll effect
   useEffect(() => {
@@ -38,15 +83,15 @@ export default function Header() {
   }, []);
 
   const navItems = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "Why Us", href: "/why-us" },
-    { label: "Contact", href: "/contact-us" },
+    { label: t("nav.home"), href: "/" },
+    { label: t("nav.about"), href: "/about" },
+    { label: t("nav.whyUs"), href: "/why-us" },
+    { label: t("nav.contact"), href: "/contact-us" },
   ];
 
   // --- Animation Variants ---
   const menuVariants = {
-    closed: { x: "100%", opacity: 1 },
+    closed: { x: isArabic ? "-100%" : "100%", opacity: 1 },
     open: {
       x: 0,
       opacity: 1,
@@ -55,7 +100,7 @@ export default function Header() {
   };
 
   const linkVariants = {
-    closed: { x: 20, opacity: 0 },
+    closed: { x: isArabic ? -20 : 20, opacity: 0 },
     open: (i: number) => ({
       x: 0,
       opacity: 1,
@@ -85,15 +130,15 @@ export default function Header() {
               <React.Fragment key={i}>
                 <span className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-black rounded-full"></span>
-                  GRAND OPENING SALE
+                  {t("marquee.grandOpening")}
                 </span>
                 <span className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-black border border-black rounded-full"></span>
-                  FRESH SUKARI DATES ARRIVED
+                  {t("marquee.freshDates")}
                 </span>
                 <span className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-black rounded-full"></span>
-                  FREE DELIVERY ON ORDERS OVER 200 SAR
+                  {t("marquee.freeDelivery")}
                 </span>
               </React.Fragment>
             ))}
@@ -126,7 +171,7 @@ export default function Header() {
             <nav className="hidden lg:flex items-center gap-8">
               {navItems.map((item) => (
                 <a
-                  key={item.label}
+                  key={item.href}
                   href={item.href}
                   className="relative font-bold text-sm uppercase tracking-wider text-black hover:text-[#bce201] transition-colors duration-200 group py-2"
                 >
@@ -139,37 +184,40 @@ export default function Header() {
 
             {/* 3. Right: Actions & Contact */}
             <div className="flex items-center gap-3 md:gap-6">
-              {/* Desktop Contact Info (New Enhancement) */}
+              {/* Desktop Contact Info */}
               <div className="hidden xl:flex flex-col items-end mr-2">
                 <div className="flex items-center gap-1 text-[10px] font-bold uppercase text-gray-500 tracking-wider">
-                  <Phone size={10} /> Support
+                  <Phone size={10} /> {t("header.support")}
                 </div>
                 <a
                   href="tel:+96612345678"
-                  className="text-sm font-black text-black hover:text-[#bce201] transition-colors"
+                  dir="ltr"
+                  className="text-sm font-black text-black hover:text-[#bce201] transition-colors inline-block"
                 >
                   +966 12 345 6789
                 </a>
               </div>
 
+              {/* Language Toggle (Desktop) */}
+              <LanguageToggle className="hidden md:flex" />
+
               <div className="flex items-center gap-3">
-                {/* Track Order (Desktop) */}
-                <button
-                  className="hidden md:flex items-center justify-center w-10 h-10 rounded-full border-2 border-black bg-white text-black hover:bg-gray-100 transition-all hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_#000]"
-                  title="Track Order"
-                >
-                  <Truck size={18} />
-                </button>
+               
 
                 {/* Wishlist - Updated Colors */}
                 <Link href="/wishlist" className="relative">
-                  <button className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full border-2 border-black bg-[#bce201] text-black hover:bg-black hover:text-[#bce201] transition-all hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_#000]">
+                  <button className="relative hidden sm:flex items-center justify-center w-10 h-10 rounded-full border-2 border-black bg-[#bce201] text-black hover:bg-black hover:text-[#bce201] transition-all hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_#000]">
                     <Heart size={18} />
+                    {isMounted && wishlistCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-black text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
+                        {wishlistCount}
+                      </span>
+                    )}
                   </button>
                 </Link>
 
                 {/* Cart */}
-                <Link href="/cart" className="relative">
+                <Link href="/cart" className="relative mr-1">
                   <button className="relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-black bg-black text-[#bce201] hover:bg-[#bce201] hover:text-black transition-all hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_#000]">
                     <ShoppingCart size={18} />
                     {isMounted && totalQuantity > 0 && (
@@ -180,9 +228,12 @@ export default function Header() {
                   </button>
                 </Link>
 
+                {/* Mobile Language Toggle */}
+                <LanguageToggle className="flex md:hidden scale-[0.85] origin-right" />
+
                 {/* Mobile Menu Toggle */}
                 <button
-                  className="lg:hidden p-1 text-black hover:text-[#bce201] transition-colors"
+                  className="lg:hidden p-1 text-black hover:text-[#bce201] transition-colors ml-1"
                   onClick={() => setIsMenuOpen(true)}
                 >
                   <Menu size={32} strokeWidth={2.5} />
@@ -212,12 +263,17 @@ export default function Header() {
               initial="closed"
               animate="open"
               exit="closed"
-              className="fixed top-0 right-0 h-full w-[85%] sm:w-[400px] bg-white z-70 border-l-2 border-black shadow-[-8px_0px_0px_0px_rgba(0,0,0,0.1)] flex flex-col"
+              className={cn(
+                "fixed top-0 h-full w-[85%] sm:w-[400px] bg-white z-70 flex flex-col",
+                isArabic
+                  ? "left-0 border-r-2 border-black shadow-[8px_0px_0px_0px_rgba(0,0,0,0.1)]"
+                  : "right-0 border-l-2 border-black shadow-[-8px_0px_0px_0px_rgba(0,0,0,0.1)]"
+              )}
             >
               {/* Drawer Header */}
               <div className="p-6 border-b-2 border-black flex items-center justify-between bg-[#bce201]">
                 <span className="text-xl font-black italic text-black">
-                  MENU
+                  {t("header.menu")}
                 </span>
                 <button
                   onClick={() => setIsMenuOpen(false)}
@@ -229,11 +285,16 @@ export default function Header() {
 
               {/* Drawer Content */}
               <div className="flex-1 overflow-y-auto p-6 space-y-8">
+                {/* Language Toggle (Mobile) */}
+                <div className="flex items-center justify-center">
+                  <LanguageToggle />
+                </div>
+
                 {/* Links */}
                 <nav className="flex flex-col space-y-4">
                   {navItems.map((item, i) => (
                     <motion.div
-                      key={item.label}
+                      key={item.href}
                       custom={i}
                       variants={linkVariants}
                     >
@@ -255,26 +316,24 @@ export default function Header() {
                     <Phone size={20} />
                     <div>
                       <p className="text-xs font-bold text-gray-500 uppercase">
-                        Customer Support
+                        {t("header.customerSupport")}
                       </p>
-                      <p className="font-bold text-lg">+966 12 345 6789</p>
+                      <p className="font-bold text-lg inline-block" dir="ltr">+966 12 345 6789</p>
                     </div>
                   </div>
 
-                  <button className="w-full py-4 border-2 border-black rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors bg-gray-50 text-black">
-                    <Truck size={20} /> Track My Order
-                  </button>
+                
 
                   <button className="w-full py-4 border-2 border-black rounded-xl font-bold flex items-center justify-center gap-2 bg-black text-white hover:bg-[#bce201] hover:text-black hover:border-black transition-all shadow-[4px_4px_0px_0px_#bce201]">
-                    <User size={20} /> My Account
+                    <User size={20} /> {t("header.myAccount")}
                   </button>
                 </div>
               </div>
 
               {/* Drawer Footer */}
               <div className="p-6 border-t-2 border-black bg-gray-50 text-center text-xs font-bold text-gray-500 uppercase tracking-widest">
-                <p>&copy; 2024 Zendo Market</p>
-                <p className="mt-1">Riyadh, Saudi Arabia</p>
+                <p>{t("header.copyright")}</p>
+                <p className="mt-1">{t("header.location")}</p>
               </div>
             </motion.div>
           </>

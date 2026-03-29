@@ -113,8 +113,11 @@ interface TeamCardProps {
   showAnimation: boolean;
 }
 
+import { useLanguage } from "@/src/context/LanguageContext";
+
 function TeamCard({ member, index, showAnimation }: TeamCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const { isArabic } = useLanguage();
 
   return (
     <div
@@ -178,19 +181,24 @@ function TeamCard({ member, index, showAnimation }: TeamCardProps) {
           </div>
         </div>
 
-        {/* Content */}
-        <div className="px-6 pb-8 space-y-3">
+        <div className={cn("px-6 pb-8 space-y-3", isArabic ? "text-right" : "")}>
           <div>
             <h3 className="text-xl font-black text-black leading-tight group-hover:text-gray-800 transition-colors">
-              {member.name}
+              {isArabic ? 
+                (member.id === "1" ? "عبد الله الراشد" : member.id === "2" ? "نورة الجابر" : member.id === "3" ? "فيصل السعود" : member.id === "4" ? "ليلى محمود" : member.id === "5" ? "عمر حسن" : "سارة جينكينز") 
+                : member.name}
             </h3>
             <p className="text-xs font-bold uppercase tracking-wider text-[#bce201] bg-black inline-block px-2 py-0.5 mt-1 rounded-sm">
-              {member.role}
+              {isArabic ? 
+                (member.id === "1" ? "المؤسس والمدير التنفيذي" : member.id === "2" ? "رئيس مصادر التوريد" : member.id === "3" ? "مدير الخدمات اللوجستية" : member.id === "4" ? "مدير التسويق" : member.id === "5" ? "عمليات المتجر" : "أخصائي الاستيراد") 
+                : member.role}
             </p>
           </div>
 
           <p className="text-sm text-gray-600 leading-relaxed font-medium">
-            {member.description}
+            {isArabic ? 
+                (member.id === "1" ? "قائد رؤيوي يركز على إحداث ثورة في تجربة البقالة في المملكة بالجمع بين التكنولوجيا والتقاليد." : member.id === "2" ? "خبيرة في بناء علاقات مع المزارعين المحليين لضمان الحصول على المنتجات الطازجة يومياً." : member.id === "3" ? "تحسين سلسلة التوريد لضمان الجودة، تصل المنتجات من المزرعة للرف في 24 ساعة." : member.id === "4" ? "التواصل مع المجتمع من خلال قصص أصلية والاحتفال بثقافة الطهي السعودية." : member.id === "5" ? "التأكد من أن كل فرع من فروع زيندو يحافظ على معايير عالمية للنظافة وخدمة العملاء." : "البحث عن أفضل المنتجات العالمية لجلب النكهات الدولية إلى الموائد السعودية.") 
+                : member.description}
           </p>
         </div>
 
@@ -206,6 +214,7 @@ function TeamCard({ member, index, showAnimation }: TeamCardProps) {
 export default function TeamSection() {
   const ref = useRef<HTMLElement | null>(null);
   const isVisible = useOnScreen(ref, "-50px");
+  const { isArabic } = useLanguage();
 
   return (
     <section
@@ -227,12 +236,12 @@ export default function TeamSection() {
             )}
           >
             <span className="inline-flex items-center gap-2 py-1 px-3 rounded-full bg-[#bce201] text-black border-2 border-black text-xs font-bold tracking-widest uppercase shadow-[4px_4px_0px_0px_#000]">
-              <Users size={14} /> Our Team
+              <Users size={14} /> {isArabic ? "فريقنا" : "Our Team"}
             </span>
             <h2 className="text-4xl md:text-6xl font-black leading-none text-black uppercase">
-              The Faces <br />
+              {isArabic ? "الوجوه" : "The Faces"} <br />
               <span className="relative inline-block">
-                Behind Freshness
+                {isArabic ? "وراء الطزاجة" : "Behind Freshness"}
                 <span className="absolute inset-x-0 bottom-2 h-3 bg-[#bce201] -z-10 opacity-60 transform -skew-x-12" />
               </span>
             </h2>
@@ -243,12 +252,11 @@ export default function TeamSection() {
               "max-w-md text-base md:text-lg leading-relaxed text-gray-600 font-medium border-l-4 border-black pl-6 transition-all duration-700 delay-100",
               isVisible
                 ? "opacity-100 translate-x-0"
-                : "opacity-0 translate-x-8"
+                : "opacity-0 translate-x-8",
+              isArabic ? "border-r-4 border-l-0 pr-6 pl-0" : ""
             )}
           >
-            Meet the passionate individuals driving Zendo&lsquo;s success. A
-            diverse team bridging tradition with modern retail to serve the
-            Kingdom.
+            {isArabic ? "تعرف على الأفراد الشغوفين الذين يقودون نجاح زيندو. فريق متنوع يربط بين التقاليد والتجزئة الحديثة لخدمة المملكة." : "Meet the passionate individuals driving Zendo's success. A diverse team bridging tradition with modern retail to serve the Kingdom."}
           </p>
         </div>
 

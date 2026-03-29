@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Wix_Madefor_Display } from "next/font/google";
+import { Montserrat, IBM_Plex_Sans_Arabic } from "next/font/google";
 import Navbar from "@/src/app/components/layouts/Header";
 import Footer from "./components/layouts/Footer";
 import { ReduxStoreProvider } from "../redux/provider";
 import HydrateStore from "../redux/hydrate/hydrateStore";
 import { Toaster } from "react-hot-toast";
+import { LanguageProvider } from "../context/LanguageContext";
+import SmoothScroll from "@/src/app/components/SmoothScroll";
 
 export const metadata: Metadata = {
   title: "Zendo Hypermarket Saudia B2B | Wholesale & Bulk Orders",
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
     title: "Zendo Hypermarket Saudia B2B",
     description:
       "Wholesale, bulk orders, and supply chain solutions for businesses in Saudi Arabia. Contact Zendo Hypermarket Riyadh B2B team.",
-    url: "https://your-domain.com", // Replace with your actual domain
+    url: "https://zendoksa.com",
     siteName: "Zendo Hypermarket Saudia B2B",
     images: [
       {
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
     description:
       "Wholesale, bulk orders, and supply chain solutions for businesses in Saudi Arabia.",
     images: ["/zendo-hypermarket.png"],
-    site: "@zendohypermarket", // Replace with your Twitter handle
+    site: "@zendoksa",
   },
   manifest: "/site.webmanifest",
   keywords: [
@@ -69,11 +71,18 @@ export const metadata: Metadata = {
   },
 };
 
-const wixMadeforDisplay = Wix_Madefor_Display({
+const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-wix-madefor-display",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-montserrat",
   display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
+});
+
+const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  variable: "--font-ibm-plex-sans-arabic",
+  display: "swap",
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
 });
 
 export default function RootLayout({
@@ -82,8 +91,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var lang = localStorage.getItem('zendo-lang');
+                  if (lang === 'ar') {
+                    document.documentElement.setAttribute('dir', 'rtl');
+                    document.documentElement.setAttribute('lang', 'ar');
+                    var s = document.createElement('style');
+                    s.id = 'lang-hide';
+                    s.textContent = 'body { opacity: 0 !important; }';
+                    document.head.appendChild(s);
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
         <link rel="icon" href="/favicon.png" type="image/x-icon" />
         <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/favicon.png" />
@@ -94,7 +122,7 @@ export default function RootLayout({
           property="og:description"
           content="Wholesale, bulk orders, and supply chain solutions for businesses in Saudi Arabia. Contact Zendo Hypermarket Riyadh B2B team."
         />
-        <meta property="og:url" content="https://your-domain.com" />
+        <meta property="og:url" content="https://zendoksa.com" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Zendo Hypermarket Saudia B2B" />
@@ -108,14 +136,18 @@ export default function RootLayout({
           content="Zendo Hypermarket, B2B, Wholesale, Bulk Orders, Saudi Arabia, Riyadh, Supply Chain, Business, Supermarket, Distributor, Supplier"
         />
       </head>
-      <body className={`antialiased ${wixMadeforDisplay.variable}  `}>
-        <ReduxStoreProvider>
-          <HydrateStore />
-          <Navbar />
-          <Toaster position="top-right" reverseOrder={false} />
-          {children}
-          <Footer />
-        </ReduxStoreProvider>
+      <body className={`antialiased ${montserrat.variable} ${ibmPlexSansArabic.variable}`}>
+        <SmoothScroll>
+          <LanguageProvider>
+            <ReduxStoreProvider>
+              <HydrateStore />
+              <Navbar />
+              <Toaster position="top-right" reverseOrder={false} />
+              {children}
+              <Footer />
+            </ReduxStoreProvider>
+          </LanguageProvider>
+        </SmoothScroll>
       </body>
     </html>
   );

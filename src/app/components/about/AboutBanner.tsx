@@ -38,9 +38,12 @@ function useOnScreen(
   return isIntersecting;
 }
 
+import { useLanguage } from "@/src/context/LanguageContext";
+
 export default function AboutBanner() {
   const ref = useRef<HTMLElement>(null);
   const isVisible = useOnScreen(ref, "-100px");
+  const { isArabic } = useLanguage();
 
   return (
     <section
@@ -64,7 +67,7 @@ export default function AboutBanner() {
           >
             <MapPin size={14} className="stroke-[3]" />
             <span className="text-sm font-bold uppercase tracking-wider">
-              Serving Saudi Arabia Since 2010
+              {isArabic ? "نخدم المملكة العربية السعودية منذ 2010" : "Serving Saudi Arabia Since 2010"}
             </span>
           </div>
 
@@ -77,9 +80,9 @@ export default function AboutBanner() {
                 : "opacity-0 translate-y-8"
             )}
           >
-            Zendo Market: <br />
+            {isArabic ? "أسواق زيندو:" : "Zendo Market:"} <br />
             <span className="relative inline-block px-2">
-              The Kingdom&#39;s
+              {isArabic ? "خيار المملكة" : "The Kingdom's"}
               <svg
                 className="absolute w-full h-4 bottom-1 left-0 text-[#bce201] -z-10 opacity-80"
                 viewBox="0 0 100 10"
@@ -93,7 +96,7 @@ export default function AboutBanner() {
                 />
               </svg>
             </span>
-            Freshest Choice
+            {isArabic ? "الأكثر طزاجة" : "Freshest Choice"}
           </h2>
 
           {/* Description */}
@@ -105,9 +108,9 @@ export default function AboutBanner() {
                 : "opacity-0 translate-y-8"
             )}
           >
-            From the finest dates of Al-Qassim to daily fresh produce sourced
-            directly from local farms. Zendo brings quality, affordability, and
-            community spirit to every aisle.
+            {isArabic
+              ? "من أجود تمور القصيم إلى المنتجات الطازجة اليومية من المزارع المحلية مباشرة. زيندو تقدم الجودة بأسعار معقولة وروح مجتمعية في كل زاوية."
+              : "From the finest dates of Al-Qassim to daily fresh produce sourced directly from local farms. Zendo brings quality, affordability, and community spirit to every aisle."}
           </p>
 
           {/* CTA Button */}
@@ -119,9 +122,9 @@ export default function AboutBanner() {
                 : "opacity-0 translate-y-8"
             )}
           >
-            <button className="group relative bg-black text-white px-8 py-4 rounded-lg font-bold text-lg border-2 border-black transition-all shadow-[6px_6px_0px_0px_#bce201] hover:shadow-[2px_2px_0px_0px_#bce201] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none flex items-center gap-3 overflow-hidden">
-              <span className="relative z-10">Visit Our Branches</span>
-              <ArrowRight className="w-5 h-5 relative z-10 transition-transform group-hover:translate-x-1" />
+            <button className={cn("group relative bg-black text-white px-8 py-4 rounded-lg font-bold text-lg border-2 border-black transition-all shadow-[6px_6px_0px_0px_#bce201] hover:shadow-[2px_2px_0px_0px_#bce201] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none flex items-center gap-3 overflow-hidden", isArabic ? "flex-row-reverse" : "")}>
+              <span className="relative z-10">{isArabic ? "قم بزيارة فروعنا" : "Visit Our Branches"}</span>
+              <ArrowRight className={cn("w-5 h-5 relative z-10 transition-transform", isArabic ? "rotate-180 group-hover:-translate-x-1" : "group-hover:translate-x-1")} />
             </button>
           </div>
         </div>
@@ -143,8 +146,8 @@ export default function AboutBanner() {
               alt="Fresh Produce Section"
               className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="absolute bottom-0 left-0 bg-black text-white px-4 py-2 rounded-tr-xl font-bold text-sm flex items-center gap-2 border-t-2 border-r-2 border-black">
-              <ShieldCheck size={16} className="text-[#bce201]" /> Fresh Daily
+            <div className={cn("absolute bottom-0 bg-black text-white px-4 py-2 font-bold text-sm flex items-center gap-2 border-t-2 border-black", isArabic ? "right-0 rounded-tl-xl border-l-2" : "left-0 rounded-tr-xl border-r-2")}>
+              <ShieldCheck size={16} className="text-[#bce201]" /> {isArabic ? "طازج يومياً" : "Fresh Daily"}
             </div>
           </div>
 
@@ -162,8 +165,8 @@ export default function AboutBanner() {
               alt="Spices and Dates"
               className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="absolute top-4 right-4 bg-[#bce201] text-black border-2 border-black px-3 py-1 rounded-lg font-bold text-xs shadow-sm rotate-3">
-              Premium Quality
+            <div className={cn("absolute top-4 bg-[#bce201] text-black border-2 border-black px-3 py-1 rounded-lg font-bold text-xs shadow-sm rotate-3", isArabic ? "left-4 text-right" : "right-4 text-left")}>
+              {isArabic ? "جودة ممتازة" : "Premium Quality"}
             </div>
           </div>
 
@@ -184,13 +187,12 @@ export default function AboutBanner() {
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
 
             {/* Floating Text over image */}
-            <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 bg-white border-2 border-black p-4 md:p-6 rounded-xl max-w-xs shadow-[4px_4px_0px_0px_#000]">
+            <div className={cn("absolute bottom-6 md:bottom-10 bg-white border-2 border-black p-4 md:p-6 rounded-xl max-w-xs shadow-[4px_4px_0px_0px_#000]", isArabic ? "right-6 md:right-10 text-right" : "left-6 md:left-10 text-left")}>
               <p className="font-black text-lg md:text-xl mb-1">
-                Everything You Need
+                {isArabic ? "كل ما تحتاجه" : "Everything You Need"}
               </p>
               <p className="text-sm text-gray-600 font-medium">
-                Household essentials, international brands, and local favorites
-                under one roof.
+                {isArabic ? "المستلزمات المنزلية، العلامات التجارية العالمية، والمفضلة المحلية تحت سقف واحد." : "Household essentials, international brands, and local favorites under one roof."}
               </p>
             </div>
           </div>

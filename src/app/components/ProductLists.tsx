@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ProductCard from "./ProductCard";
+import ProductSkeleton from "./UI/ProductSkeleton";
 import Pagination from "./Pagination";
 import CategorySelector from "./CategorySelector";
-import { mainCategories } from "../data/categoriesData";
 import { useAppDispatch } from "@/src/hooks/useDispatch";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/redux";
@@ -14,21 +14,12 @@ import { fetchBrands } from "@/src/redux/brand/thunk";
 import { fetchProducts } from "@/src/redux/product/thunk";
 import { toggleWishlist } from "@/src/redux/wishlist/slice";
 import { addToCart } from "@/src/redux/cart/slice";
-
-type SubCategory = {
-  name: string;
-  items: string[];
-};
-
-type MainCategory = {
-  name: string;
-  icon: React.ElementType;
-  subCategories: SubCategory[];
-};
+import { useLanguage } from "@/src/context/LanguageContext";
 
 export default function PopularProducts() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { t } = useLanguage();
 
   const {
     datas: products,
@@ -37,8 +28,6 @@ export default function PopularProducts() {
   } = useSelector((state: RootState) => state.product);
   const brands = useSelector((state: RootState) => state.brand.data);
   const categories = useSelector((state: RootState) => state.category.data);
-
-  console.log("Products from Redux:", products, "categories:", categories);
 
   const [activeMainCategory, setActiveMainCategory] = useState<string>("All");
   const [activeCategoryName, setActiveCategoryName] = useState<string>("All");
@@ -126,11 +115,12 @@ export default function PopularProducts() {
         handleSubCategoryClick={handleSubCategoryClick}
       />
 
-      {/* Loading State */}
+      {/* Loading State Skeleton */}
       {loading && (
-        <div className="text-center py-16">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="text-gray-500 mt-4">Loading products...</p>
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 mt-8">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <ProductSkeleton key={`skeleton-${i}`} />
+          ))}
         </div>
       )}
 
@@ -144,7 +134,6 @@ export default function PopularProducts() {
               hoveredCard={hoveredCard}
               setHoveredCard={setHoveredCard}
               addedItems={addedItems}
-              // wishlistItems={wishlistItems}
               handleAddToCart={handleAddToCart}
               handleToggleWishlist={handleToggleWishlist}
               onClick={() => {
@@ -160,10 +149,10 @@ export default function PopularProducts() {
         <div className="text-center py-16 animate-in fade-in duration-300">
           <div className="text-6xl mb-4">🛒</div>
           <p className="text-gray-500 text-lg font-medium">
-            No products found in this category.
+            {t("products.noProducts")}
           </p>
           <p className="text-gray-400 text-sm mt-2">
-            Try selecting a different category or subcategory.
+            {t("products.tryDifferent")}
           </p>
         </div>
       )}

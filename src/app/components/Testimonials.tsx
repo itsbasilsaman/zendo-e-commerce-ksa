@@ -4,69 +4,66 @@ import React, { useState } from "react";
 import { Quote, Star, CheckCircle2 } from "lucide-react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { useLanguage } from "@/src/context/LanguageContext";
 
 // --- Utility ---
 function cn(...inputs: unknown[]) {
   return twMerge(clsx(inputs));
 }
 
-// --- Data: Zendo Market Reviews ---
-const testimonials = [
-  {
-    id: 1,
-    quote:
-      "The fresh dates section is absolutely unmatched in Riyadh. The quality of the Sukari dates is just perfect every single time.",
-    name: "Ahmed Al-Sayed",
-    handle: "@ahmed_eats",
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces",
-  },
-  {
-    id: 2,
-    quote:
-      "Finally, a supermarket that actually understands 'fresh'. The vegetables look like they were picked an hour ago. Zendo is my go-to.",
-    name: "Sarah Jenkins",
-    handle: "@sarah.j_lifestyle",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces",
-  },
-  {
-    id: 3,
-    quote:
-      "Great prices on imported goods. I found all the spices I needed for my restaurant here. Highly recommended for bulk buying.",
-    name: "Chef Omar",
-    handle: "@chef_omar_k",
-    image:
-      "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=150&h=150&fit=crop&crop=faces",
-  },
-  {
-    id: 4,
-    quote:
-      "The staff is incredibly helpful and the aisles are wide and clean. Shopping here is actually a relaxing experience.",
-    name: "Layla Hassan",
-    handle: "@layla_designs",
-    image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=faces",
-  },
-  {
-    id: 5,
-    quote:
-      "Zendo's bakery is a hidden gem. Their fresh samoon bread in the morning is the best way to start the day.",
-    name: "Fahad Al-Otaibi",
-    handle: "@fahad_fitness",
-    image:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=faces",
-  },
-];
-
 export default function Testimonials() {
   const [isPaused, setIsPaused] = useState(false);
+  const { t, locale } = useLanguage();
+
+  // --- Data: Zendo Market Reviews ---
+  const testimonials = [
+    {
+      id: 1,
+      quote: t("testimonials.q1"),
+      name: "Ahmed Al-Sayed",
+      handle: "@ahmed_eats",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces",
+    },
+    {
+      id: 2,
+      quote: t("testimonials.q2"),
+      name: "Sarah Jenkins",
+      handle: "@sarah.j_lifestyle",
+      image:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces",
+    },
+    {
+      id: 3,
+      quote: t("testimonials.q3"),
+      name: "Chef Omar",
+      handle: "@chef_omar_k",
+      image:
+        "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=150&h=150&fit=crop&crop=faces",
+    },
+    {
+      id: 4,
+      quote: t("testimonials.q4"),
+      name: "Layla Hassan",
+      handle: "@layla_designs",
+      image:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=faces",
+    },
+    {
+      id: 5,
+      quote: t("testimonials.q5"),
+      name: "Fahad Al-Otaibi",
+      handle: "@fahad_fitness",
+      image:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=faces",
+    },
+  ];
 
   // Duplicate array for seamless infinite loop
   const doubledTestimonials = [...testimonials, ...testimonials];
 
   return (
-    <section className="w-full bg-white py-16 md:py-24 overflow-hidden font-sans relative border-t-2 border-black">
+    <section dir="ltr" className="w-full bg-white py-16 md:py-24 overflow-hidden font-sans relative border-t-2 border-black">
       {/* CSS for Animation */}
       <style>{`
         @keyframes scroll {
@@ -86,10 +83,10 @@ export default function Testimonials() {
 
       <div className="container mx-auto px-4 mb-12 text-center relative z-10">
         <span className="inline-block py-1 px-3 rounded-full bg-[#bce201] text-black border-2 border-black text-xs font-bold tracking-widest uppercase mb-4 shadow-[4px_4px_0px_0px_#000]">
-          Community Love
+          {t("testimonials.badge")}
         </span>
         <h2 className="text-4xl md:text-5xl font-black text-black tracking-tighter">
-          Trusted by Families <br /> Across the Kingdom
+          {t("testimonials.title1")} <br /> {t("testimonials.title2")}
         </h2>
       </div>
 
@@ -100,6 +97,8 @@ export default function Testimonials() {
         <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-12 md:w-32 bg-gradient-to-l from-white to-transparent" />
 
         <div
+          dir="ltr"
+          style={{ animationDirection: 'normal' }}
           className={cn(
             "flex gap-6 md:gap-8 w-max px-4",
             "animate-marquee",
@@ -117,9 +116,9 @@ export default function Testimonials() {
                 "group relative flex flex-col justify-between",
                 "w-[300px] md:w-[400px] p-6 md:p-8",
                 "bg-white border-2 border-black rounded-xl",
-                "shadow-[6px_6px_0px_0px_#bce201]", // Hard lime shadow
+                "shadow-[6px_6px_0px_0px_#bce201]",
                 "transition-all duration-300 ease-out",
-                "hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#bce201]" // Pop effect
+                "hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#bce201]"
               )}
             >
               {/* Quote Icon */}
@@ -172,7 +171,7 @@ export default function Testimonials() {
 
               {/* Verified Badge */}
               <div className="absolute top-4 right-4 text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide flex items-center gap-1">
-                <CheckCircle2 size={10} /> Verified
+                <CheckCircle2 size={10} /> {t("testimonials.verified")}
               </div>
             </div>
           ))}

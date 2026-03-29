@@ -22,6 +22,7 @@ import {
   updateQuantity,
 } from "@/src/redux/cart/slice";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/src/context/LanguageContext";
 
 // --- Utility ---
 function cn(...inputs: (string | undefined | null | false)[]) {
@@ -32,6 +33,7 @@ export default function OrderSummary() {
   const dispatch = useDispatch();
   const { items } = useSelector((state: RootState) => state.cart);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { t, getLocalizedName } = useLanguage();
 
   const router = useRouter();
 
@@ -63,11 +65,11 @@ export default function OrderSummary() {
         <div className="flex items-center justify-between mb-10 border-b-2 border-black pb-6">
           <div>
             <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">
-              Your Cart
+              {t("cart.title")}
             </h1>
             <p className="text-gray-600 font-bold mt-1 flex items-center gap-2">
               <span className="w-2 h-2 bg-[#bce201] rounded-full border border-black"></span>
-              {items.length} Items ready for checkout
+              {items.length} {t("cart.itemsReady")}
             </p>
           </div>
 
@@ -76,7 +78,7 @@ export default function OrderSummary() {
               onClick={() => dispatch(clearCart())}
               className="hidden sm:flex text-xs font-bold uppercase tracking-widest text-red-500 hover:bg-red-50 px-3 py-2 rounded transition-colors"
             >
-              Clear Cart
+              {t("cart.clearCart")}
             </button>
           )}
         </div>
@@ -97,10 +99,10 @@ export default function OrderSummary() {
                   </div>
                   <div className="space-y-2">
                     <h3 className="text-2xl font-black uppercase">
-                      Your cart is empty
+                      {t("cart.emptyTitle")}
                     </h3>
                     <p className="text-gray-500 font-medium">
-                      Looks like you haven&lsquo;t added anything yet.
+                      {t("cart.emptyMessage")}
                     </p>
                   </div>
                 </motion.div>
@@ -114,47 +116,46 @@ export default function OrderSummary() {
                     exit={{ opacity: 0, x: -20, transition: { duration: 0.2 } }}
                     className="group bg-white rounded-xl border-2 border-black p-4 shadow-[4px_4px_0px_0px_#000] hover:translate-x-1 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#bce201] transition-all duration-200"
                   >
-                    <div className="flex flex-col sm:flex-row gap-6">
+                    <div className="flex flex-row gap-3 sm:gap-6">
                       {/* Image */}
-                      <div className="relative shrink-0 w-full sm:w-32 md:w-40 aspect-square rounded-lg border-2 border-black overflow-hidden bg-gray-100">
+                      <div className="relative shrink-0 w-24 h-24 sm:w-32 sm:h-auto md:w-40 aspect-square rounded-lg border-2 border-black overflow-hidden bg-gray-100">
                         <img
                           src={product.product.image}
-                          alt={product.product.name.en}
+                          alt={getLocalizedName(product.product.name)}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         {product.product.discount && (
-                          <div className="absolute top-2 left-2 px-2 py-0.5 text-[10px] uppercase tracking-wide font-black bg-[#bce201] text-black border border-black">
-                            {product.product.discount} OFF
+                          <div className="absolute top-1 left-1 sm:top-2 sm:left-2 px-1 py-0.5 sm:px-2 sm:py-0.5 text-[8px] sm:text-[10px] uppercase tracking-wide font-black bg-[#bce201] text-black border border-black max-w-[calc(100%-8px)] truncate text-center leading-none flex items-center justify-center">
+                            {product.product.discount} {t("detail.off")}
                           </div>
                         )}
                       </div>
 
                       {/* Content */}
-                      <div className="flex-1 flex flex-col justify-between min-h-[120px]">
+                      <div className="flex-1 flex flex-col justify-between min-h-[96px] sm:min-h-[120px]">
                         <div>
-                          <div className="flex justify-between items-start gap-4">
+                          <div className="flex justify-between items-start gap-2 sm:gap-4">
                             <div>
-                              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">
-                                {product.product.brandId?.name.en}
+                              <p className="text-[8px] sm:text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5 sm:mb-1">
+                                {getLocalizedName(product.product.brandId?.name)}
                               </p>
-                              <h3 className="font-black text-lg sm:text-xl text-black leading-tight">
-                                {product.product.name.en}
+                              <h3 className="font-black text-sm sm:text-lg md:text-xl text-black leading-tight line-clamp-2">
+                                {getLocalizedName(product.product.name)}
                               </h3>
                             </div>
                             <button
                               onClick={() => removeItem(product.product._id)}
-                              className="text-gray-400 hover:text-red-600 transition-colors p-2 sm:hidden"
+                              className="text-gray-400 hover:text-red-600 transition-colors p-1 sm:p-2 sm:hidden shrink-0 -mt-1 -mr-1"
                             >
-                              <Trash2 className="w-5 h-5" />
+                              <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                             </button>
                           </div>
 
                           <p className="text-xs font-bold text-gray-500 mt-1">
-                            {product.product.categoryId?.name.en} /{" "}
-                            {
-                              product.product.categoryId?.subCategories?.[0]
-                                ?.name?.en
-                            }
+                            {getLocalizedName(product.product.categoryId?.name)} /{" "}
+                            {getLocalizedName(
+                              product.product.categoryId?.subCategories?.[0]?.name
+                            )}
                           </p>
 
                           {/* Rating */}
@@ -176,12 +177,12 @@ export default function OrderSummary() {
                         </div>
 
                         {/* Controls Row */}
-                        <div className="flex flex-wrap items-end justify-between mt-4 gap-4">
-                          <div className="flex items-center gap-6">
+                        <div className="flex flex-row items-end justify-between mt-2 sm:mt-4 gap-2 sm:gap-4">
+                          <div className="flex items-center gap-4 sm:gap-6">
                             {/* Quantity Stepper */}
-                            <div className="flex items-center border-2 border-black rounded-lg bg-white h-10 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]">
+                            <div className="flex items-center border-2 border-black rounded-lg bg-white h-7 sm:h-10 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]">
                               <button
-                                className="w-8 h-full flex items-center justify-center hover:bg-gray-100 disabled:opacity-30 border-r-2 border-black transition-colors"
+                                className="w-6 sm:w-8 h-full flex items-center justify-center hover:bg-gray-100 disabled:opacity-30 border-r-2 border-black transition-colors"
                                 onClick={() =>
                                   updateQty(product.product._id, -1)
                                 }
@@ -189,11 +190,11 @@ export default function OrderSummary() {
                               >
                                 <Minus className="w-3 h-3" />
                               </button>
-                              <span className="w-10 text-center text-sm font-black tabular-nums">
+                              <span className="w-8 sm:w-10 text-center text-xs sm:text-sm font-black tabular-nums">
                                 {product.quantity}
                               </span>
                               <button
-                                className="w-8 h-full flex items-center justify-center hover:bg-gray-100 border-l-2 border-black transition-colors"
+                                className="w-6 sm:w-8 h-full flex items-center justify-center hover:bg-gray-100 border-l-2 border-black transition-colors"
                                 onClick={() =>
                                   updateQty(product.product._id, 1)
                                 }
@@ -207,7 +208,7 @@ export default function OrderSummary() {
                               className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-red-600 transition-colors uppercase tracking-wide group/delete"
                             >
                               <Trash2 className="w-4 h-4 group-hover/delete:rotate-12 transition-transform" />
-                              Remove
+                              {t("cart.remove")}
                             </button>
                           </div>
 
@@ -216,15 +217,14 @@ export default function OrderSummary() {
                             {product.product.originalPrice &&
                               product.product.originalPrice >
                                 product.product.price && (
-                                <div className="text-xs text-gray-400 line-through mb-0.5 font-bold decoration-2 decoration-red-500">
-                                  £{product.product.originalPrice.toFixed(2)}
+                                <div className="text-[10px] sm:text-xs text-gray-400 line-through mb-0.5 font-bold decoration-2 decoration-red-500">
+                                  {product.product.originalPrice.toFixed(2)} SAR
                                 </div>
                               )}
-                            <div className="text-xl font-black text-black">
-                              £
+                            <div className="text-base sm:text-xl font-black text-black">
                               {(
                                 product.product.price * product.quantity
-                              ).toFixed(2)}
+                              ).toFixed(2)} SAR
                             </div>
                           </div>
                         </div>
@@ -243,27 +243,27 @@ export default function OrderSummary() {
                 {/* Summary Header */}
                 <div className="bg-black p-4 border-b-2 border-black">
                   <h2 className="text-xl font-black text-white uppercase tracking-wider flex items-center gap-2">
-                    <ShieldCheck className="text-[#bce201]" /> Order Summary
+                    <ShieldCheck className="text-[#bce201]" /> {t("cart.orderSummary")}
                   </h2>
                 </div>
 
                 <div className="p-6 space-y-6">
                   <div className="space-y-3 text-sm font-medium">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Subtotal</span>
+                      <span className="text-gray-600">{t("cart.subtotal")}</span>
                       <span className="font-bold text-black">
-                        £{subtotal.toFixed(2)}
+                        {subtotal.toFixed(2)} SAR
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Shipping</span>
+                      <span className="text-gray-600">{t("cart.shipping")}</span>
                       <span className="font-bold text-black">
-                        £{shipping.toFixed(2)}
+                        {shipping.toFixed(2)} SAR
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Tax</span>
-                      <span className="font-bold text-black">£0.00</span>
+                      <span className="text-gray-600">{t("cart.tax")}</span>
+                      <span className="font-bold text-black">0.00 SAR</span>
                     </div>
                   </div>
 
@@ -272,14 +272,14 @@ export default function OrderSummary() {
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-lg font-black text-black block uppercase">
-                        Total
+                        {t("cart.total")}
                       </span>
                       <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-                        Including VAT
+                        {t("cart.includingVat")}
                       </span>
                     </div>
                     <div className="text-3xl font-black text-black">
-                      £{total.toFixed(2)}
+                      {total.toFixed(2)} SAR
                     </div>
                   </div>
 
@@ -289,17 +289,17 @@ export default function OrderSummary() {
                     disabled={isProcessing}
                   >
                     {isProcessing ? (
-                      <>Processing...</>
+                      <>{t("cart.processing")}</>
                     ) : (
                       <>
-                        Checkout <ArrowRight className="w-6 h-6" />
+                        {t("cart.checkout")} <ArrowRight className="w-6 h-6" />
                       </>
                     )}
                   </button>
 
                   <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-3 flex items-center justify-center gap-3 text-xs font-bold text-gray-500 uppercase tracking-wide">
                     <Truck className="w-4 h-4 text-black" />
-                    Free shipping on orders over £200
+                    {t("cart.freeShipping")}
                   </div>
                 </div>
               </div>

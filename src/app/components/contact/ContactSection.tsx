@@ -63,8 +63,10 @@ const socialImages = [
     caption: "Beat the heat with our Iced Matcha 🍵 #ZendoFresh",
   },
 ];
+import { useLanguage } from "@/src/context/LanguageContext";
 
 export default function ContactSection() {
+  const { isArabic } = useLanguage();
   const ref = useRef(null);
   const isVisible = useOnScreen(ref, "-100px");
 
@@ -80,6 +82,7 @@ export default function ContactSection() {
   return (
     <section
       ref={ref}
+      dir="ltr"
       className="w-full bg-white py-16 md:py-24 overflow-hidden border-t-2 border-black relative"
     >
       {/* --- CSS for Infinite Scroll Animation --- */}
@@ -118,21 +121,21 @@ export default function ContactSection() {
               </div>
 
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-black uppercase leading-[0.9]">
-                Capture The <br />
+                {isArabic ? "التقط" : "Capture The"} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#bce201] to-black">
-                  Moment
+                  {isArabic ? "اللحظة" : "Moment"}
                 </span>
               </h2>
             </div>
 
             <p className="text-gray-600 text-lg font-medium leading-relaxed">
-              Join our community of food lovers! Tag us in your daily grocery
-              hauls, cafe moments, and culinary creations for a chance to be
-              featured.
+              {isArabic
+                ? "انضم إلى مجتمع محبي الطعام لدينا! قم بالإشارة إلينا في مشترياتك اليومية، لحظات المقهى، وإبداعاتك في الطهي للحصول على فرصة للظهور."
+                : "Join our community of food lovers! Tag us in your daily grocery hauls, cafe moments, and culinary creations for a chance to be featured."}
             </p>
 
             <button className="group inline-flex items-center gap-3 px-8 py-4 bg-[#bce201] text-black font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-[2px_2px_0px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all active:translate-x-[4px] active:translate-y-[4px] active:shadow-none">
-              Follow Us
+              {isArabic ? "تابعنا" : "Follow Us"}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
@@ -150,7 +153,7 @@ export default function ContactSection() {
             <div className="absolute right-0 top-0 bottom-0 w-12 md:w-24 z-20 bg-gradient-to-l from-white to-transparent pointer-events-none" />
 
             {/* Animated Container */}
-            <div className="flex gap-6 w-max animate-social-scroll px-4 py-4">
+            <div className="flex gap-6 w-max animate-social-scroll px-4 py-4" dir="ltr" style={{ animationDirection: 'normal' }}>
               {loopImages.map((image, index) => (
                 <div
                   key={`${image.id}-${index}`}
@@ -170,7 +173,7 @@ export default function ContactSection() {
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white gap-2">
                         <Instagram size={32} />
                         <span className="font-bold text-sm tracking-wider">
-                          View Post
+                          {isArabic ? "عرض المنشور" : "View Post"}
                         </span>
                       </div>
                     </div>
@@ -190,7 +193,9 @@ export default function ContactSection() {
                     </div>
 
                     <p className="mt-2 text-xs font-medium text-black line-clamp-1 px-1">
-                      {image.caption}
+                      {isArabic ? 
+                        (image.id === 1 ? "قهوة الصباح في مقهى زيندو ☕️ #صباح_الرياض" : image.id === 2 ? "طازج من الفرن! 🥐 #مخبز_زيندو" : "تغلب على الحرارة مع الماتشا المثلجة لدينا 🍵 #زيندو_طازج") 
+                        : image.caption}
                     </p>
                   </div>
 

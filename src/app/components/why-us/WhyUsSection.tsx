@@ -60,7 +60,10 @@ const features = [
   },
 ];
 
+import { useLanguage } from "@/src/context/LanguageContext";
+
 export default function WhyUsSection() {
+  const { isArabic } = useLanguage();
   const [activeFeature, setActiveFeature] = useState<number>(1);
   const ref = useRef<HTMLElement>(null);
   const isVisible = useOnScreen(ref, "-100px");
@@ -84,7 +87,7 @@ export default function WhyUsSection() {
                 : "opacity-0 translate-y-8"
             )}
           >
-            <Star size={14} className="fill-[#bce201]" /> Why Choose Zendo?
+            <Star size={14} className="fill-[#bce201]" /> {isArabic ? "لماذا تختار زيندو؟" : "Why Choose Zendo?"}
           </div>
 
           <h2
@@ -95,9 +98,9 @@ export default function WhyUsSection() {
                 : "opacity-0 translate-y-8"
             )}
           >
-            Redefining <br className="hidden md:block" />
+            {isArabic ? "نعيد تعريف" : "Redefining"} <br className="hidden md:block" />
             <span className="relative inline-block px-2">
-              The Supermarket
+              {isArabic ? "مفهوم السوبر ماركت" : "The Supermarket"}
               <span className="absolute bottom-2 left-0 w-full h-4 bg-[#bce201] -z-10 opacity-60 transform -skew-x-12" />
             </span>
           </h2>
@@ -110,8 +113,7 @@ export default function WhyUsSection() {
                 : "opacity-0 translate-y-8"
             )}
           >
-            More than just a grocery store. Zendo is a community hub connecting
-            Saudi families with the finest local produce and global treasures.
+            {isArabic ? "أكثر من مجرد متجر بقالة. زيندو هو مركز مجتمعي يربط العائلات السعودية بأجود المنتجات المحلية والكنوز العالمية." : "More than just a grocery store. Zendo is a community hub connecting Saudi families with the finest local produce and global treasures."}
           </p>
         </div>
 
@@ -138,7 +140,7 @@ export default function WhyUsSection() {
 
               {/* Floating Badge */}
               <div className="absolute bottom-6 left-6 bg-[#bce201] text-black border-2 border-black px-4 py-3 rounded-lg font-black text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_#000]">
-                Since 2010
+                {isArabic ? "منذ 2010" : "Since 2010"}
               </div>
             </div>
 
@@ -169,7 +171,7 @@ export default function WhyUsSection() {
                   )}
                 >
                   <div className="p-6 flex items-center justify-between">
-                    <h3 className="text-xl font-black uppercase tracking-wide flex items-center gap-3">
+                    <h3 className={cn("text-xl font-black uppercase tracking-wide flex items-center gap-3", isArabic ? "flex-row-reverse" : "")}>
                       <span
                         className={cn(
                           "flex items-center justify-center w-8 h-8 rounded-full border-2 text-sm transition-colors",
@@ -180,7 +182,9 @@ export default function WhyUsSection() {
                       >
                         {index + 1}
                       </span>
-                      {feature.title}
+                      {isArabic ? 
+                        (feature.id === 1 ? "طزاجة من المزرعة للرف" : feature.id === 2 ? "واردات عالمية حصرية" : "توصيل سريع في الرياض") 
+                        : feature.title}
                     </h3>
                     <div
                       className={cn(
@@ -211,10 +215,13 @@ export default function WhyUsSection() {
                           "text-lg leading-relaxed font-medium",
                           activeFeature === feature.id
                             ? "text-gray-300"
-                            : "text-gray-600"
+                            : "text-gray-600",
+                          isArabic ? "text-right" : ""
                         )}
                       >
-                        {feature.description}
+                        {isArabic ? 
+                          (feature.id === 1 ? "نحن نتعاون مباشرة مع المزارع المحلية في القصيم والأحساء. تصل خضرواتك إلى متجرنا خلال 24 ساعة من الحصاد، لضمان أعلى مستويات التغذية والمذاق." : feature.id === 2 ? "تتوق لنكهات أصيلة؟ نحن نوفر أكثر من 500 علامة تجارية دولية حصرية من أوروبا، آسيا، والأمريكيتين لن تجدها في أي مكان آخر بالمملكة." : "اطلب قبل الساعة 2 ظهراً واستمتع بتوصيل في نفس اليوم لجميع أنحاء الرياض. أسطولنا المبرد يضمن بقاء بضائعك المجمدة مجمدة والخضراوات طازجة.") 
+                          : feature.description}
                       </p>
                     </div>
                   </div>
@@ -231,9 +238,9 @@ export default function WhyUsSection() {
                   : "opacity-0 translate-y-8"
               )}
             >
-              <button className="w-full sm:w-auto bg-[#bce201] hover:bg-white text-black px-8 py-4 rounded-xl font-bold text-lg border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-[2px_2px_0px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all active:translate-x-[4px] active:translate-y-[4px] active:shadow-none flex items-center justify-center gap-2 group">
-                Start Shopping
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <button className={cn("w-full sm:w-auto bg-[#bce201] hover:bg-white text-black px-8 py-4 rounded-xl font-bold text-lg border-2 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-[2px_2px_0px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all active:translate-x-[4px] active:translate-y-[4px] active:shadow-none flex items-center justify-center gap-2 group", isArabic ? "flex-row-reverse" : "")}>
+                {isArabic ? "ابدأ التسوق" : "Start Shopping"}
+                <ArrowRight className={cn("w-5 h-5 transition-transform", isArabic ? "rotate-180 group-hover:-translate-x-1" : "group-hover:translate-x-1")} />
               </button>
             </div>
           </div>

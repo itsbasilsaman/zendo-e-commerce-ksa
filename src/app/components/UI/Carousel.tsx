@@ -2,38 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import { Leaf, Zap, ArrowRight, Heart, Check, Star } from "lucide-react"
-
-interface Slide {
-  id: number
-  title: string
-  subtitle: string
-  image: string
-  tag: string
-}
-
-const slides: Slide[] = [
-  {
-    id: 1,
-    title: "Fresh Market Big Discount",
-    subtitle: "Save up to 50% off on your first bulk order.",
-    image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1000&auto=format&fit=crop",
-    tag: "Super Sale",
-  },
-  {
-    id: 2,
-    title: "Organic Produce Special",
-    subtitle: "Premium organic vegetables directly from Al-Qassim.",
-    image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=1000&auto=format&fit=crop",
-    tag: "100% Organic",
-  },
-  {
-    id: 3,
-    title: "Farm Fresh Goodness",
-    subtitle: "From the farm to your table in under 24 hours.",
-    image: "https://images.unsplash.com/photo-1597362925123-77861d3fbac7?q=80&w=1000&auto=format&fit=crop",
-    tag: "Local Farms",
-  },
-]
+import { useLanguage } from "@/src/context/LanguageContext"
 
 export default function HeroCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -41,6 +10,31 @@ export default function HeroCarousel() {
   const [showSuccess, setShowSuccess] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const [liked, setLiked] = useState(false)
+  const { t } = useLanguage()
+
+  const slides = [
+    {
+      id: 1,
+      title: t("carousel.slide1.title"),
+      subtitle: t("carousel.slide1.subtitle"),
+      image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1000&auto=format&fit=crop",
+      tag: t("carousel.slide1.tag"),
+    },
+    {
+      id: 2,
+      title: t("carousel.slide2.title"),
+      subtitle: t("carousel.slide2.subtitle"),
+      image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=1000&auto=format&fit=crop",
+      tag: t("carousel.slide2.tag"),
+    },
+    {
+      id: 3,
+      title: t("carousel.slide3.title"),
+      subtitle: t("carousel.slide3.subtitle"),
+      image: "https://images.unsplash.com/photo-1597362925123-77861d3fbac7?q=80&w=1000&auto=format&fit=crop",
+      tag: t("carousel.slide3.tag"),
+    },
+  ]
 
   // Auto-advance carousel
   useEffect(() => {
@@ -49,7 +43,7 @@ export default function HeroCarousel() {
       setCurrentSlide((prev) => (prev + 1) % slides.length)
     }, 5000)
     return () => clearInterval(interval)
-  }, [isHovered])
+  }, [isHovered, slides.length])
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault()
@@ -78,7 +72,7 @@ export default function HeroCarousel() {
           
           {/* Top Right Decorative Label */}
           <div className="absolute top-0 right-0 bg-black text-[#bce201] px-6 py-2 rounded-bl-2xl border-l-2 border-b-2 border-black font-bold text-sm uppercase tracking-widest z-20 hidden md:block">
-            Daily Deals
+            {t("carousel.dailyDeals")}
           </div>
 
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between h-full">
@@ -113,7 +107,7 @@ export default function HeroCarousel() {
                   <div className="flex-1 relative">
                     <input
                       type="email"
-                      placeholder="Your email address"
+                      placeholder={t("carousel.emailPlaceholder")}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -124,14 +118,14 @@ export default function HeroCarousel() {
                     type="submit"
                     className="h-14 px-8 bg-black text-white hover:text-[#bce201] rounded-xl border-2 border-black font-bold uppercase tracking-wide shadow-[4px_4px_0px_0px_#bce201] hover:shadow-none hover:translate-y-1 active:translate-y-1 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
                   >
-                    Subscribe <ArrowRight size={20} />
+                    {t("carousel.subscribe")} <ArrowRight size={20} />
                   </button>
                 </form>
 
                 {/* Success Message */}
                 {showSuccess && (
                   <div className="mt-4 flex items-center gap-2 text-green-600 font-bold animate-in fade-in slide-in-from-top-2">
-                    <Check size={20} /> You&lsquo;re on the list!
+                    <Check size={20} /> {t("carousel.onTheList")}
                   </div>
                 )}
               </div>
