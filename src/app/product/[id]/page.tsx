@@ -150,7 +150,7 @@ export default function ProductInnerPage() {
   };
 
   const productName = getLocalizedName(product.name) || t("detail.productName");
-  const brandName = getLocalizedName(product.brandId?.name) || t("detail.brand");
+  const brandName = getLocalizedName(product.brandId?.name);
   const categoryName = getLocalizedName(product.categoryId?.name) || t("detail.category");
   const subCategoryName = getLocalizedName(product.categoryId?.subCategories?.[0]?.name) || "-";
 
@@ -175,12 +175,9 @@ export default function ProductInnerPage() {
             <div className="relative aspect-square w-full bg-white rounded-2xl border-2 border-black shadow-[8px_8px_0px_0px_#000] overflow-hidden group">
               {product.discount && (
                 <div
-                  className={cn(
-                    "absolute top-4 left-4 z-20 text-black border-2 border-black px-3 py-1 font-black text-xs uppercase tracking-widest",
-                    product.discountColor || "bg-[#bce201]"
-                  )}
+                  className="absolute top-4 left-4 z-20 bg-[#bce201] text-black border-2 border-black px-3 py-1 font-black text-xs uppercase tracking-widest rounded-sm"
                 >
-                  {product.discount} {t("detail.off")}
+                  {product.discount}% {t("detail.off")}
                 </div>
               )}
               <Image
@@ -202,9 +199,11 @@ export default function ProductInnerPage() {
             <div className="space-y-4">
               <div className="flex justify-between items-start gap-4">
                 <div>
-                  <p className="text-sm font-bold text-[#bce201] uppercase tracking-widest bg-black inline-block px-2 py-0.5 mb-2">
-                    {brandName}
-                  </p>
+                  {brandName && (
+                    <p className="text-sm font-bold text-gray-500 mb-2 uppercase tracking-wide">
+                      {t("detail.brand")}: <span className="text-[#bce201] bg-black px-2 py-0.5 inline-block ml-2">{brandName}</span>
+                    </p>
+                  )}
                   <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter text-black uppercase leading-[1.1]">
                     {productName}
                   </h1>

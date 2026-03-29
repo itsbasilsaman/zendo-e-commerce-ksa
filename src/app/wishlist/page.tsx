@@ -159,8 +159,8 @@ export default function WishlistPage() {
                       
                       {/* Discount Badge */}
                       {product.discount && (
-                        <div className="absolute top-1 left-1 sm:top-2 sm:left-2 px-1 py-0.5 sm:px-2 sm:py-0.5 text-[8px] sm:text-[10px] uppercase tracking-wide font-black bg-[#bce201] text-black border border-black max-w-[calc(100%-8px)] truncate text-center leading-none flex items-center justify-center">
-                          {product.discount} {t("detail.off")}
+                        <div className="absolute top-1 left-1 sm:top-2 sm:left-2 px-1 py-0.5 sm:px-2 sm:py-0.5 text-[8px] sm:text-[10px] uppercase tracking-wide font-black bg-[#bce201] text-black border border-black rounded-sm max-w-[calc(100%-8px)] truncate text-center leading-none flex items-center justify-center">
+                          {product.discount}% {t("detail.off")}
                         </div>
                       )}
                     </div>
